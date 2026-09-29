@@ -2,8 +2,6 @@ import { ValidationError } from '../../core/types/validation-error';
 import { VideoInputDto } from '../dto/video.input.dto';
 import { AVAILABLE_RESOLUTIONS } from '../types/video';
 
-const TITLE_MAX_LENGTH = 400;
-const AUTHOR_MAX_LENGTH = 200;
 const MIN_AGE = 1;
 const MAX_AGE = 18;
 
@@ -17,19 +15,11 @@ export const validateVideoInputDto = (
 ): ValidationError[] => {
   const errors: ValidationError[] = [];
 
-  if (
-    typeof data.title !== 'string' ||
-    !data.title.trim() ||
-    data.title.trim().length > TITLE_MAX_LENGTH
-  ) {
+  if (typeof data.title !== 'string' || !data.title.trim()) {
     errors.push({ field: 'title', message: 'Invalid title' });
   }
 
-  if (
-    typeof data.author !== 'string' ||
-    !data.author.trim() ||
-    data.author.trim().length > AUTHOR_MAX_LENGTH
-  ) {
+  if (typeof data.author !== 'string' || !data.author.trim()) {
     errors.push({ field: 'author', message: 'Invalid author' });
   }
 
