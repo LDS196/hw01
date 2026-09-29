@@ -25,7 +25,7 @@ export function createVideoHandler(
   ).toISOString();
 
   const newVideo: Video = {
-    id: lastVideo ? lastVideo.id + 1 : 1,
+    id: lastVideo ? lastVideo.id + 1 : 0,
     title: req.body.title,
     author: req.body.author,
     availableResolutions: req.body.availableResolutions,
