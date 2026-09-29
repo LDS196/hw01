@@ -98,9 +98,9 @@ const validationErrorSchema: OpenAPIV3.SchemaObject = {
 
 const errorResponseSchema: OpenAPIV3.SchemaObject = {
   type: 'object',
-  required: ['errorMessages'],
+  required: ['errorsMessages'],
   properties: {
-    errorMessages: {
+    errorsMessages: {
       type: 'array',
       items: { $ref: '#/components/schemas/ValidationError' },
     },

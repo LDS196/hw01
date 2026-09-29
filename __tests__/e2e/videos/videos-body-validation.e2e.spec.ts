@@ -40,7 +40,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet1.body.errorMessages).toHaveLength(4);
+    expect(invalidDataSet1.body.errorsMessages).toHaveLength(4);
 
     const invalidDataSet2 = await request(app)
       .post(VIDEOS_PATH)
@@ -53,7 +53,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet2.body.errorMessages).toHaveLength(4);
+    expect(invalidDataSet2.body.errorsMessages).toHaveLength(4);
 
     const invalidDataSet3 = await request(app)
       .post(VIDEOS_PATH)
@@ -63,7 +63,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet3.body.errorMessages).toHaveLength(1);
+    expect(invalidDataSet3.body.errorsMessages).toHaveLength(1);
 
     const videoListResponse = await request(app).get(VIDEOS_PATH);
     expect(videoListResponse.body).toHaveLength(0);
@@ -88,7 +88,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet1.body.errorMessages).toHaveLength(4);
+    expect(invalidDataSet1.body.errorsMessages).toHaveLength(4);
 
     const invalidDataSet2 = await request(app)
       .put(`${VIDEOS_PATH}/${createdVideoId}`)
@@ -101,7 +101,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet2.body.errorMessages).toHaveLength(4);
+    expect(invalidDataSet2.body.errorsMessages).toHaveLength(4);
 
     const invalidDataSet3 = await request(app)
       .put(`${VIDEOS_PATH}/${createdVideoId}`)
@@ -111,7 +111,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet3.body.errorMessages).toHaveLength(1);
+    expect(invalidDataSet3.body.errorsMessages).toHaveLength(1);
 
     const videoResponse = await request(app).get(
       `${VIDEOS_PATH}/${createdVideoId}`,

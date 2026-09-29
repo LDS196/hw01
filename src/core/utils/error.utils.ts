@@ -1,8 +1,8 @@
 import { ValidationError } from '../types/validation-error';
 
-// Оборачивает список ошибок в единый формат ответа: { errorMessages: [...] }.
+// Оборачивает список ошибок в единый формат ответа ДЗ: { errorsMessages: [...] }.
 export const createErrorMessages = (
   errors: ValidationError[],
-): { errorMessages: ValidationError[] } => {
-  return { errorMessages: errors };
+): { errorsMessages: ValidationError[] } => {
+  return { errorsMessages: errors };
 };
