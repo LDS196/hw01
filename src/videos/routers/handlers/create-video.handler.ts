@@ -18,9 +18,10 @@ export function createVideoHandler(
   }
 
   const lastVideo = db.videos[db.videos.length - 1];
-  const createdAt = new Date().toISOString();
+  const now = new Date();
+  const createdAt = now.toISOString();
   const publicationDate = new Date(
-    Date.now() + 24 * 60 * 60 * 1000,
+    now.getTime() + 24 * 60 * 60 * 1000,
   ).toISOString();
 
   const newVideo: Video = {

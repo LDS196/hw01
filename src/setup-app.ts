@@ -16,5 +16,10 @@ export const setupApp = (app: Express) => {
   app.use(VIDEOS_PATH, videosRouter);
   app.use(TESTING_PATH, testingRouter);
   setupSwagger(app);
+
+  app.use((req: Request, res: Response) => {
+    res.sendStatus(HttpStatus.NotFound);
+  });
+
   return app;
 };
