@@ -1,1 +1,1 @@
-export const SWAGGER_PATH = '/api/docs';
+export const SWAGGER_PATH = '/docs';

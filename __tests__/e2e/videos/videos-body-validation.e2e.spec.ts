@@ -35,7 +35,7 @@ describe('Video API body validation check', () => {
       .expect(HttpStatus.NoContent);
   });
 
-  it(`❌ should not create video when incorrect body passed; POST /api/videos`, async () => {
+  it(`❌ should not create video when incorrect body passed; POST /videos`, async () => {
     const invalidDataSet1 = await request(app)
       .post(VIDEOS_PATH)
       .send({
@@ -84,7 +84,7 @@ describe('Video API body validation check', () => {
     expect(videoListResponse.body).toHaveLength(0);
   });
 
-  it('❌ should not update video when incorrect data passed; PUT /api/videos/:id', async () => {
+  it('❌ should not update video when incorrect data passed; PUT /videos/:id', async () => {
     const {
       body: { id: createdVideoId },
     } = await request(app)
@@ -142,7 +142,7 @@ describe('Video API body validation check', () => {
     });
   });
 
-  it('❌ should not update video when incorrect resolutions passed; PUT /api/videos/:id', async () => {
+  it('❌ should not update video when incorrect resolutions passed; PUT /videos/:id', async () => {
     const {
       body: { id: createdVideoId },
     } = await request(app)

@@ -28,7 +28,7 @@ describe('Video API', () => {
       .expect(HttpStatus.NoContent);
   });
 
-  it('✅ should create video; POST /api/videos', async () => {
+  it('✅ should create video; POST /videos', async () => {
     const newVideo: CreateVideoInputDto = {
       ...testVideoData,
       title: 'Interstellar',
@@ -52,7 +52,7 @@ describe('Video API', () => {
     });
   });
 
-  it('✅ should return videos list; GET /api/videos', async () => {
+  it('✅ should return videos list; GET /videos', async () => {
     await request(app)
       .post(VIDEOS_PATH)
       .send({ ...testVideoData, title: 'Another Video' })
@@ -71,7 +71,7 @@ describe('Video API', () => {
     expect(videoListResponse.body.length).toBeGreaterThanOrEqual(2);
   });
 
-  it('✅ should return video by id; GET /api/videos/:id', async () => {
+  it('✅ should return video by id; GET /videos/:id', async () => {
     const createResponse = await request(app)
       .post(VIDEOS_PATH)
       .send({ ...testVideoData, title: 'Another Video' })
@@ -88,7 +88,7 @@ describe('Video API', () => {
     });
   });
 
-  it('✅ should update video; PUT /api/videos/:id', async () => {
+  it('✅ should update video; PUT /videos/:id', async () => {
     const createResponse = await request(app)
       .post(VIDEOS_PATH)
       .send({ ...testVideoData, title: 'Another Video' })
@@ -121,7 +121,7 @@ describe('Video API', () => {
     });
   });
 
-  it(`✅ DELETE /api/videos/:id and check after NOT FOUND`, async () => {
+  it(`✅ DELETE /videos/:id and check after NOT FOUND`, async () => {
     const res = await request(app)
       .post(VIDEOS_PATH)
       .send({ ...testVideoData, title: 'Another Video' })
