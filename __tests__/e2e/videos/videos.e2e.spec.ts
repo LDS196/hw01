@@ -2,7 +2,10 @@ import request from 'supertest';
 import express from 'express';
 import { setupApp } from '../../../src/setup-app';
 import { HttpStatus } from '../../../src/core/types/http-statuses';
-import { VideoInputDto } from '../../../src/videos/dto/video.input.dto';
+import {
+  CreateVideoInputDto,
+  UpdateVideoInputDto,
+} from '../../../src/videos/dto/video.input.dto';
 import { VIDEOS_PATH } from '../../../src/videos/constants/videos.paths';
 import {
   TESTING_PATH,
@@ -13,7 +16,7 @@ describe('Video API', () => {
   const app = express();
   setupApp(app);
 
-  const testVideoData: VideoInputDto = {
+  const testVideoData: CreateVideoInputDto = {
     title: 'Inception',
     author: 'Nolan',
     availableResolutions: ['P720', 'P1080'],
@@ -26,16 +29,27 @@ describe('Video API', () => {
   });
 
   it('✅ should create video; POST /api/videos', async () => {
-    const newVideo: VideoInputDto = {
+    const newVideo: CreateVideoInputDto = {
       ...testVideoData,
       title: 'Interstellar',
       author: 'Christopher Nolan',
     };
 
-    await request(app)
+    const createResponse = await request(app)
       .post(VIDEOS_PATH)
       .send(newVideo)
       .expect(HttpStatus.Created);
+
+    expect(createResponse.body).toEqual({
+      id: expect.any(Number),
+      title: newVideo.title,
+      author: newVideo.author,
+      availableResolutions: newVideo.availableResolutions,
+      canBeDownloaded: false,
+      minAgeRestriction: null,
+      createdAt: expect.any(String),
+      publicationDate: expect.any(String),
+    });
   });
 
   it('✅ should return videos list; GET /api/videos', async () => {
@@ -80,7 +94,7 @@ describe('Video API', () => {
       .send({ ...testVideoData, title: 'Another Video' })
       .expect(HttpStatus.Created);
 
-    const videoUpdateData: VideoInputDto = {
+    const videoUpdateData: UpdateVideoInputDto = {
       ...testVideoData,
       title: 'Updated Title',
       author: 'Updated Author',

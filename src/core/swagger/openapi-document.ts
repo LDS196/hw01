@@ -12,7 +12,7 @@ const availableResolutionsSchema: OpenAPIV3.SchemaObject = {
   example: 'P1080',
 };
 
-const videoInputDtoSchema: OpenAPIV3.SchemaObject = {
+const createVideoInputDtoSchema: OpenAPIV3.SchemaObject = {
   type: 'object',
   additionalProperties: false,
   required: ['title', 'author', 'availableResolutions'],
@@ -20,17 +20,51 @@ const videoInputDtoSchema: OpenAPIV3.SchemaObject = {
     title: {
       type: 'string',
       minLength: 1,
-      maxLength: 400,
+      maxLength: 40,
       example: 'Inception',
     },
     author: {
       type: 'string',
       minLength: 1,
-      maxLength: 200,
+      maxLength: 20,
       example: 'Nolan',
     },
     availableResolutions: {
       type: 'array',
+      minItems: 1,
+      items: { $ref: '#/components/schemas/AvailableResolutions' },
+      example: ['P720', 'P1080'],
+    },
+  },
+};
+
+const updateVideoInputDtoSchema: OpenAPIV3.SchemaObject = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'title',
+    'author',
+    'availableResolutions',
+    'canBeDownloaded',
+    'minAgeRestriction',
+    'publicationDate',
+  ],
+  properties: {
+    title: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 40,
+      example: 'Inception',
+    },
+    author: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 20,
+      example: 'Nolan',
+    },
+    availableResolutions: {
+      type: 'array',
+      minItems: 1,
       items: { $ref: '#/components/schemas/AvailableResolutions' },
       example: ['P720', 'P1080'],
     },
@@ -41,6 +75,7 @@ const videoInputDtoSchema: OpenAPIV3.SchemaObject = {
       minimum: 1,
       maximum: 18,
       example: 16,
+      description: 'null — без ограничения',
     },
     publicationDate: {
       type: 'string',
@@ -52,7 +87,7 @@ const videoInputDtoSchema: OpenAPIV3.SchemaObject = {
 
 const videoSchema: OpenAPIV3.SchemaObject = {
   allOf: [
-    { $ref: '#/components/schemas/VideoInputDto' },
+    { $ref: '#/components/schemas/CreateVideoInputDto' },
     {
       type: 'object',
       required: [
@@ -148,7 +183,7 @@ export const openApiDocument: OpenAPIV3.Document = {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/VideoInputDto' },
+              schema: { $ref: '#/components/schemas/CreateVideoInputDto' },
             },
           },
         },
@@ -202,7 +237,7 @@ export const openApiDocument: OpenAPIV3.Document = {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/VideoInputDto' },
+              schema: { $ref: '#/components/schemas/UpdateVideoInputDto' },
             },
           },
         },
@@ -243,7 +278,8 @@ export const openApiDocument: OpenAPIV3.Document = {
   components: {
     schemas: {
       AvailableResolutions: availableResolutionsSchema,
-      VideoInputDto: videoInputDtoSchema,
+      CreateVideoInputDto: createVideoInputDtoSchema,
+      UpdateVideoInputDto: updateVideoInputDtoSchema,
       Video: videoSchema,
       ValidationError: validationErrorSchema,
       ErrorResponse: errorResponseSchema,

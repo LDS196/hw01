@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { VideoInputDto } from '../../dto/video.input.dto';
+import { UpdateVideoInputDto } from '../../dto/video.input.dto';
 import { db } from '../../../db/in-memory.db';
 import { HttpStatus } from '../../../core/types/http-statuses';
 import { createErrorMessages } from '../../../core/utils/error.utils';
-import { validateVideoInputDto } from '../../validation/video-input-dto.validation';
+import { validateUpdateVideoInputDto } from '../../validation/video-input-dto.validation';
 
 export function updateVideoHandler(
-  req: Request<{ id: string }, {}, VideoInputDto>,
+  req: Request<{ id: string }, {}, UpdateVideoInputDto>,
   res: Response,
 ) {
   const index = db.videos.findIndex((item) => item.id === +req.params.id);
@@ -18,7 +18,7 @@ export function updateVideoHandler(
     return;
   }
 
-  const errors = validateVideoInputDto(req.body);
+  const errors = validateUpdateVideoInputDto(req.body);
 
   if (errors.length) {
     res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
@@ -28,7 +28,12 @@ export function updateVideoHandler(
   const current = db.videos[index];
   db.videos[index] = {
     ...current,
-    ...req.body,
+    title: req.body.title,
+    author: req.body.author,
+    availableResolutions: req.body.availableResolutions,
+    canBeDownloaded: req.body.canBeDownloaded,
+    minAgeRestriction: req.body.minAgeRestriction,
+    publicationDate: req.body.publicationDate,
     id: current.id,
     createdAt: current.createdAt,
   };

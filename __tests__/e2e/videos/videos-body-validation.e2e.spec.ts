@@ -2,7 +2,10 @@ import request from 'supertest';
 import express from 'express';
 import { setupApp } from '../../../src/setup-app';
 import { HttpStatus } from '../../../src/core/types/http-statuses';
-import { VideoInputDto } from '../../../src/videos/dto/video.input.dto';
+import {
+  CreateVideoInputDto,
+  UpdateVideoInputDto,
+} from '../../../src/videos/dto/video.input.dto';
 import { VIDEOS_PATH } from '../../../src/videos/constants/videos.paths';
 import {
   TESTING_PATH,
@@ -13,10 +16,14 @@ describe('Video API body validation check', () => {
   const app = express();
   setupApp(app);
 
-  const correctTestVideoData: VideoInputDto = {
+  const correctTestVideoData: CreateVideoInputDto = {
     title: 'Inception',
     author: 'Nolan',
     availableResolutions: ['P720', 'P1080'],
+  };
+
+  const correctUpdateVideoData: UpdateVideoInputDto = {
+    ...correctTestVideoData,
     canBeDownloaded: false,
     minAgeRestriction: 16,
     publicationDate: '2026-02-01T00:00:00.000Z',
@@ -36,11 +43,10 @@ describe('Video API body validation check', () => {
         title: '   ',
         author: '    ',
         availableResolutions: ['P999'],
-        canBeDownloaded: 'yes',
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet1.body.errorsMessages).toHaveLength(4);
+    expect(invalidDataSet1.body.errorsMessages).toHaveLength(3);
 
     const invalidDataSet2 = await request(app)
       .post(VIDEOS_PATH)
@@ -49,21 +55,30 @@ describe('Video API body validation check', () => {
         title: '',
         author: '',
         availableResolutions: 'P144',
-        minAgeRestriction: 0,
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet2.body.errorsMessages).toHaveLength(4);
+    expect(invalidDataSet2.body.errorsMessages).toHaveLength(3);
 
     const invalidDataSet3 = await request(app)
       .post(VIDEOS_PATH)
       .send({
         ...correctTestVideoData,
-        title: 'A'.repeat(401),
+        title: 'A'.repeat(41),
       })
       .expect(HttpStatus.BadRequest);
 
     expect(invalidDataSet3.body.errorsMessages).toHaveLength(1);
+
+    const invalidDataSet4 = await request(app)
+      .post(VIDEOS_PATH)
+      .send({
+        ...correctTestVideoData,
+        availableResolutions: [],
+      })
+      .expect(HttpStatus.BadRequest);
+
+    expect(invalidDataSet4.body.errorsMessages).toHaveLength(1);
 
     const videoListResponse = await request(app).get(VIDEOS_PATH);
     expect(videoListResponse.body).toHaveLength(0);
@@ -80,7 +95,7 @@ describe('Video API body validation check', () => {
     const invalidDataSet1 = await request(app)
       .put(`${VIDEOS_PATH}/${createdVideoId}`)
       .send({
-        ...correctTestVideoData,
+        ...correctUpdateVideoData,
         title: '   ',
         author: '    ',
         availableResolutions: ['P999'],
@@ -93,7 +108,7 @@ describe('Video API body validation check', () => {
     const invalidDataSet2 = await request(app)
       .put(`${VIDEOS_PATH}/${createdVideoId}`)
       .send({
-        ...correctTestVideoData,
+        ...correctUpdateVideoData,
         title: '',
         author: '',
         availableResolutions: 'P144',
@@ -106,8 +121,8 @@ describe('Video API body validation check', () => {
     const invalidDataSet3 = await request(app)
       .put(`${VIDEOS_PATH}/${createdVideoId}`)
       .send({
-        ...correctTestVideoData,
-        title: 'A'.repeat(401),
+        ...correctUpdateVideoData,
+        title: 'A'.repeat(41),
       })
       .expect(HttpStatus.BadRequest);
 
@@ -120,7 +135,10 @@ describe('Video API body validation check', () => {
     expect(videoResponse.body).toEqual({
       ...correctTestVideoData,
       id: createdVideoId,
+      canBeDownloaded: false,
+      minAgeRestriction: null,
       createdAt: expect.any(String),
+      publicationDate: expect.any(String),
     });
   });
 
@@ -135,7 +153,7 @@ describe('Video API body validation check', () => {
     await request(app)
       .put(`${VIDEOS_PATH}/${createdVideoId}`)
       .send({
-        ...correctTestVideoData,
+        ...correctUpdateVideoData,
         availableResolutions: ['P144', 'invalid-resolution', 'P720'],
       })
       .expect(HttpStatus.BadRequest);
@@ -147,7 +165,10 @@ describe('Video API body validation check', () => {
     expect(videoResponse.body).toEqual({
       ...correctTestVideoData,
       id: createdVideoId,
+      canBeDownloaded: false,
+      minAgeRestriction: null,
       createdAt: expect.any(String),
+      publicationDate: expect.any(String),
     });
   });
 });
